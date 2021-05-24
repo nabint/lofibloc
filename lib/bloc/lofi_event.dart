@@ -3,32 +3,52 @@ part of 'lofi_bloc.dart';
 @immutable
 abstract class LofiEvent extends Equatable {}
 
-class LofiLoading extends LofiEvent{
+class LofiLoading extends LofiEvent {
   @override
   // TODO: implement props
   List<Object> get props => throw UnimplementedError();
-
 }
 
-class PopulateLofi extends LofiEvent{
+class RepeatEvent extends LofiEvent{
+  
   @override
   // TODO: implement props
   List<Object> get props => throw UnimplementedError();
   
 }
 
-class PlayLofi extends LofiEvent{
+class PopulateLofi extends LofiEvent {
   @override
   // TODO: implement props
   List<Object> get props => throw UnimplementedError();
 }
 
-class StopLofi extends LofiEvent{
+class PlayLofi extends LofiEvent {
+  final int id;
+  Lofi lofi;
+  bool repeat;
+  PlayLofi(this.id, this.lofi, {this.repeat = false});
   @override
   // TODO: implement props
   List<Object> get props => throw UnimplementedError();
 }
-class PauseLofi extends LofiEvent{
+
+class StopLofi extends LofiEvent {
+  @override
+  // TODO: implement props
+  List<Object> get props => throw UnimplementedError();
+}
+class StopLofii extends LofiEvent{
+  @override
+  // TODO: implement props
+  List<Object> get props => throw UnimplementedError();
+
+}
+
+
+class PauseLofi extends LofiEvent {
+  Lofi lofi;
+  PauseLofi(this.lofi);
   @override
   // TODO: implement props
   List<Object> get props => throw UnimplementedError();

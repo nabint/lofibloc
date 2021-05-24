@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:lofi/data/models/lofi.dart';
 
 class RecentLofi extends StatelessWidget {
+  final Lofi lofi;
+
+  const RecentLofi({Key key, this.lofi}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -34,12 +38,12 @@ class RecentLofi extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Nutshell',
+                        lofi.title,
                         style:
                             TextStyle(color: Color(0xff555563), fontSize: 18),
                       ),
                       Text(
-                        'Alice In Chains',
+                        lofi.artist,
                         style: TextStyle(
                           fontSize: 14,
                           color: Color(0xFFb3b3c9),
