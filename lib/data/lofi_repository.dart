@@ -16,7 +16,7 @@ class LofiRepo {
       Lofi(
           id: 2,
           title: "Fhill Lofi",
-          lofiUrl: "1.mp3",
+          lofiUrl: "2.mp3",
           artist: "Enrique",
           imageUrl: "assets/images/01.jpg"),
     );

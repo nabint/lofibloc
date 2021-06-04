@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_share/flutter_share.dart';
+import 'package:lofi/pages/about.dart';
+import 'package:volume/volume.dart';
 
 class DrawerWidget extends StatefulWidget {
   @override
@@ -6,7 +9,41 @@ class DrawerWidget extends StatefulWidget {
 }
 
 class _DrawerWidgetState extends State<DrawerWidget> {
-  double _value = 0.0;
+  double _sliderValue = 0.0;
+  int maxVol = 0, currentVol = 0;
+  Future<void> initPlatformState() async {
+    await Volume.controlVolume(AudioManager
+        .STREAM_MUSIC); // you can change which volume you want to change.
+  }
+
+  Future<void> share() async {
+    await FlutterShare.share(
+        title: 'Example share',
+        text: 'Example share text',
+        linkUrl: 'https://flutter.dev/',
+        chooserTitle: 'Example Chooser Title');
+  }
+
+  updateVolumes() async {
+    // get Max Volume
+    maxVol = await Volume.getMaxVol;
+    // get Current Volume
+    currentVol = await Volume.getVol;
+    _sliderValue = currentVol.toDouble();
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initPlatformState();
+    updateVolumes();
+  }
+
+  setVol(int i) async {
+    await Volume.setVol(i, showVolumeUI: ShowVolumeUI.HIDE);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -30,19 +67,15 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             height: MediaQuery.of(context).size.height * 0.07,
           ),
           ListTile(
-            leading: Icon(
-              Icons.share,
-              size: 28,
-            ),
-            title: Text(
-              'Share It',
-              style: TextStyle(color: Colors.black, fontSize: 18),
-            ),
-            onTap: () {
-              // Update the state of the app.
-              // ...
-            },
-          ),
+              leading: Icon(
+                Icons.share,
+                size: 28,
+              ),
+              title: Text(
+                'Share It',
+                style: TextStyle(color: Colors.black, fontSize: 18),
+              ),
+              onTap: share),
           ListTile(
             leading: Icon(
               Icons.volume_down,
@@ -61,12 +94,14 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             padding: const EdgeInsets.only(left: 50.0),
             child: Slider(
               min: 0,
-              max: 100,
-              value: _value,
-              onChanged: (value) {
+              max: maxVol.toDouble(),
+              value: _sliderValue,
+              onChanged: (value) async {
                 setState(() {
-                  _value = value;
+                  _sliderValue = value;
                 });
+                await setVol(value.toInt());
+                await updateVolumes();
               },
             ),
           ),
@@ -90,10 +125,13 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               size: 28,
             ),
             title: Text(
-              'About Us',
+              'About',
               style: TextStyle(color: Colors.black, fontSize: 18),
             ),
             onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (_) {
+                return AboutUs();
+              }));
               // Update the state of the app.
               // ...
             },

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lofi/bloc/lofi_bloc.dart';
 import 'package:lofi/data/models/lofi.dart';
+import 'package:lofi/utils/navigationeffects.dart';
 
 class LofiDetail extends StatefulWidget {
   final bool isPlaying;
@@ -19,9 +20,26 @@ class LofiDetail extends StatefulWidget {
 class _LofiDetailState extends State<LofiDetail> {
   // StreamController<bool> _streamController = StreamController<bool>();
   LofiBloc lofibloc;
+  List<Lofi> allLofi;
+  Lofi nextLofi, prevLofi;
   @override
   void initState() {
     lofibloc = BlocProvider.of<LofiBloc>(context);
+    allLofi = lofibloc.lofiRepo.allLofi;
+    try {
+      nextLofi = allLofi.firstWhere(
+        (element) => (element.id == (widget.lofi.id + 1)),
+      );
+    } catch (e) {
+      nextLofi = null;
+    }
+    try {
+      prevLofi = allLofi.firstWhere(
+        (element) => (element.id == (widget.lofi.id - 1)),
+      );
+    } catch (e) {
+      prevLofi = null;
+    }
     super.initState();
   }
 
@@ -167,12 +185,22 @@ class _LofiDetailState extends State<LofiDetail> {
                 .createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
           },
           blendMode: BlendMode.dstIn,
-          child: Image(
-            image: AssetImage(widget.lofi.imageUrl),
-            width: mediaQueryData.size.width,
-            height: (maxSize - mediaQueryData.padding.top) * 0.45,
-            fit: BoxFit.cover,
-          ),
+          child: Stack(children: [
+            Image(
+              image: AssetImage(widget.lofi.imageUrl),
+              width: mediaQueryData.size.width,
+              height: (maxSize - mediaQueryData.padding.top) * 0.45,
+              fit: BoxFit.cover,
+            ),
+            // Padding(
+            //   padding: const EdgeInsets.all(8.0),
+            //   child: Align(
+
+            //     alignment: Alignment.topRight,
+            //     child: Icon(Icons.favorite_outline,size: 45,color: Colors.black,),
+            //   ),
+            // )
+          ]),
         ),
       ),
     );
@@ -211,7 +239,23 @@ class _LofiDetailState extends State<LofiDetail> {
                 IconButton(
                   icon: Icon(Icons.skip_previous),
                   iconSize: maxSize * 0.05,
-                  onPressed: () {},
+                  onPressed: prevLofi != null
+                      ? () {
+                          lofibloc.add(StopLofi());
+                          Navigator.pushReplacement(
+                            context,
+                            SlideRightRoute(
+                              page: BlocProvider.value(
+                                value: lofibloc,
+                                child: LofiDetail(
+                                  isPlaying: isPlaying,
+                                  lofi: prevLofi,
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                      : null,
                 ),
                 SizedBox(
                   width: 10,
@@ -225,7 +269,8 @@ class _LofiDetailState extends State<LofiDetail> {
                   ),
                   child: BlocBuilder<LofiBloc, LofiState>(
                     builder: (context, state) {
-                      if (state is LofiPlaying) {
+                      if (state is LofiPlaying &&
+                          state.lofi.id == widget.lofi.id) {
                         return IconButton(
                           icon: Icon(Icons.pause_circle_filled),
                           padding: EdgeInsets.zero,
@@ -253,9 +298,26 @@ class _LofiDetailState extends State<LofiDetail> {
                   width: 10,
                 ),
                 IconButton(
-                    icon: Icon(Icons.skip_next),
-                    iconSize: maxSize * 0.05,
-                    onPressed: () {}),
+                  icon: Icon(Icons.skip_next),
+                  iconSize: maxSize * 0.05,
+                  onPressed: nextLofi != null
+                      ? () {
+                          lofibloc.add(StopLofi());
+                          Navigator.pushReplacement(
+                            context,
+                            SlideLeftRoute(
+                              page: BlocProvider.value(
+                                value: lofibloc,
+                                child: LofiDetail(
+                                  isPlaying: isPlaying,
+                                  lofi: nextLofi,
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                      : null,
+                ),
               ],
             ),
             SizedBox(

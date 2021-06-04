@@ -14,9 +14,9 @@ void updateNotificationMediaPlayer(bool isPlaying, Lofi lofi) {
       color: Colors.purple.shade700,
       bigPicture: lofi.getImageUrl,
       autoCancel: false,
-      showWhen: true,
+      hideLargeIconOnExpand: true,
       notificationLayout: NotificationLayout.MediaPlayer,
-      progress: 20,
+      progress: 13,
     ),
     actionButtons: [
       NotificationActionButton(
@@ -45,14 +45,14 @@ void updateNotificationMediaPlayer(bool isPlaying, Lofi lofi) {
           key: 'MEDIA_NEXT',
           icon: 'resource://drawable/res_ic_next',
           label: 'Next',
-          autoCancel:false,
+          autoCancel: false,
           // enabled: MediaPlayerCentral.hasNextMedia,
           buttonType: ActionButtonType.KeepOnTop),
       NotificationActionButton(
           key: 'MEDIA_CLOSE',
           icon: 'resource://drawable/res_ic_close',
           label: 'Close',
-          autoCancel: isPlaying ? false:true,
+          autoCancel: isPlaying ? false : true,
           buttonType: ActionButtonType.KeepOnTop),
     ],
   );
@@ -61,5 +61,3 @@ void updateNotificationMediaPlayer(bool isPlaying, Lofi lofi) {
 void cancelNotification() {
   AwesomeNotifications().cancelAll();
 }
-
-

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -10,7 +12,7 @@ import 'package:lofi/pages/widgets/drawer.dart';
 
 import 'package:lofi/pages/widgets/rec_widget.dart';
 import 'package:lofi/pages/widgets/pop_widget.dart';
-import 'package:lofi/pages/widgets/bottom_navbar.dart';
+import 'package:lofi/utils/shared_prefs_central.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -22,34 +24,20 @@ class _HomeState extends State<Home> {
   bool _showAppbar = true;
   bool isScrollingDown = false;
   List<Lofi> _lofiList, lofiList;
-  var reqLofi;
-  List<Lofi> recLofis;
+  var reqLofi, nextLofi, prevLofi;
+  String recLofiString;
+  List<Lofi> recLofis = [];
 
   List<Widget> recWidgets = [];
 
-
-  void readSharedPref(LofiBloc lofiBloc) async {
-    var recLofi = await lofiBloc.read("Recently Played");
-    setState(() {
-      recLofis = Lofi.decode(recLofi);
-      // addRecWidgets();
-    });
-  }
-
   @override
-  Future<void> initState() {
+  void initState() {
     super.initState();
-
     final lofibloc = BlocProvider.of<LofiBloc>(context);
-    final sharedbloc = BlocProvider.of<SharedprefsBloc>(context);
-
-    print('SharedBloc ' + sharedbloc.toString());
     lofibloc.add(PopulateLofi());
-
+    readSharedPref();
     WidgetsBinding.instance.addPostFrameCallback(
-      (timeStamp) {
-        readSharedPref(lofibloc);
-      },
+      (timeStamp) {},
     );
 
     _scrollViewController.addListener(() {
@@ -97,13 +85,35 @@ class _HomeState extends State<Home> {
         );
 
         if (receivedNotification.buttonKeyPressed == 'MEDIA_PAUSE') {
-          print("Required Lofi is " + reqLofi.toString());
+          print("Pauuedd");
+          print("Received" + receivedNotification.id.toString());
+          print('Req  ' + reqLofi.id.toString());
           lofibloc.add(PauseLofi(reqLofi));
         } else if (receivedNotification.buttonKeyPressed == 'MEDIA_PLAY') {
-          print("Required Lofi is " + reqLofi.toString());
           lofibloc.add(
             PlayLofi(reqLofi.id, reqLofi),
           );
+        } else if (receivedNotification.buttonKeyPressed == 'MEDIA_NEXT') {
+          nextLofi = lofiList.firstWhere(
+            (element) => (element.id == (receivedNotification.id + 1)),
+          );
+          if (nextLofi != null) {
+            lofibloc.add(StopLofi());
+            // print("Playing Next Lofi" + nextLofi.id.toString());
+            lofibloc.add(
+              PlayLofi(nextLofi.id, nextLofi),
+            );
+          } else {
+            lofibloc.add(PlayLofi(0, lofiList[0]));
+          }
+        } else if (receivedNotification.buttonKeyPressed == 'MEDIA_PREV') {
+          prevLofi = lofiList.firstWhere(
+              (element) => (element.id == (receivedNotification.id - 1)));
+          print("Prev Lofi is " + prevLofi.id.toString());
+          if (prevLofi != null) {
+            lofibloc.add(StopLofi());
+            lofibloc.add(PlayLofi(prevLofi.id, prevLofi));
+          }
         }
       },
     );
@@ -118,6 +128,8 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    var time = const Duration(seconds: 10);
+    Timer.periodic(time, (timer) => readSharedPref());
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
@@ -270,30 +282,46 @@ class _HomeState extends State<Home> {
                   if (recLofis != null)
                     BlocBuilder<SharedprefsBloc, SharedprefsState>(
                       builder: (context, state) {
-                        print('Current state is ' + state.toString());
-                        print(recLofis);
                         if (state is RecentAdded ||
                             state is SharedprefsInitial) {
-                          return Column(children: _buildRecentWidgets());
+                          // readSharedPref(BlocProvider.of<LofiBloc>(context));
+                          return BlocProvider.value(
+                            value: BlocProvider.of<LofiBloc>(context),
+                            child: Column(children: _buildRecentWidgets()),
+                          );
                         }
                       },
                     )
                   else
-                    Text("container"),
+                    Container()
                 ],
               ),
             ),
           ),
         ],
       ),
-      bottomNavigationBar: BottomNav(),
+      // bottomNavigationBar: BottomNav(),
     );
   }
 
   List<Widget> _buildRecentWidgets() {
+    recWidgets = [];
     for (Lofi lofi in recLofis) {
       recWidgets.add(RecentLofi(lofi: lofi));
     }
+
     return recWidgets;
+  }
+
+  void readSharedPref() async {
+    recLofiString = await read("Recently Played");
+    if (recLofiString != null) {
+      var decodedLofi = Lofi.decode(recLofiString);
+      setState(() {
+        recLofis = decodedLofi;
+      });
+    }
+
+    return;
   }
 }

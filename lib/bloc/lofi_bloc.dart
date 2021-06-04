@@ -1,7 +1,5 @@
 import 'dart:async';
-import 'dart:convert';
 
-import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -10,9 +8,8 @@ import 'package:lofi/bloc/sharedprefs_bloc.dart';
 import 'package:lofi/data/lofi_repository.dart';
 import 'package:lofi/data/models/lofi.dart';
 import 'package:lofi/utils/media_player_central.dart';
+import 'package:lofi/utils/shared_prefs_central.dart';
 import 'package:meta/meta.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 part 'lofi_event.dart';
 part 'lofi_state.dart';
 
@@ -25,23 +22,6 @@ class LofiBloc extends Bloc<LofiEvent, LofiState> with ChangeNotifier {
   static bool isPlaying = false;
   SharedprefsBloc sbloc;
 
-  save(String key, value) async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString(key, json.encode(value));
-  }
-
-  read(String key) async {
-    final prefs = await SharedPreferences.getInstance();
-    print('Shared Preferences' + prefs.toString());
-    final prefString = prefs.getString(key);
-    if (prefString != null) {
-      return json.decode(prefString);
-    } else {
-      print("Prefs Key Null");
-      return null;
-    }
-  }
-
   LofiBloc(this.lofiRepo, this.cache, this._player, {this.sbloc})
       : super(LofiInitial()) {
     if (isRepeat == false) {
@@ -52,8 +32,7 @@ class LofiBloc extends Bloc<LofiEvent, LofiState> with ChangeNotifier {
   listenPlayerState() {
     _player.onPlayerStateChanged.listen(
       (event) async {
-        if (event == AudioPlayerState.COMPLETED) {
-          print("Completed");
+        if (event == PlayerState.COMPLETED) {
           // cancelNotification();
           this.add(StopLofi());
           isPlaying = false;
@@ -104,6 +83,7 @@ class LofiBloc extends Bloc<LofiEvent, LofiState> with ChangeNotifier {
       yield LofiPlaying(event.lofi);
     } else if (event is StopLofi) {
       _player.stop();
+      isPlaying = false;
       cancelNotification();
       yield LofiPaused();
     } else if (event is PauseLofi) {
@@ -128,14 +108,15 @@ class LofiBloc extends Bloc<LofiEvent, LofiState> with ChangeNotifier {
 
     print(recLofi);
     if (recLofi != null) {
+      print("INside");
       lofis = Lofi.decode(recLofi);
     }
     lofis.insert(0, lofi);
-    if (lofis.length >= 6) {
+    if (lofis != null) if (lofis.length >= 6) {
       lofis.removeLast();
     }
     recLofi = Lofi.encode(lofis);
     print(recLofi);
-    save("Recently Played", recLofi); 
+    save("Recently Played", recLofi);
   }
 }

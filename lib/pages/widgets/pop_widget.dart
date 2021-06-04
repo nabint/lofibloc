@@ -13,7 +13,7 @@ class PopWidget extends StatelessWidget {
     Key key,
     this.lofi,
   }) : super(key: key);
-  bool isPlaying = false;
+
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +118,7 @@ class PopWidget extends StatelessWidget {
                           if (isPlaying) {
                             return InkWell(
                               onTap: () {
-                                lofibloc.add(PauseLofi(lofi));
+                                lofibloc.add(StopLofi());
                               },
                               child: Icon(
                                 Icons.stop_circle_outlined,
@@ -130,7 +130,7 @@ class PopWidget extends StatelessWidget {
                             return InkWell(
                               onTap: () {
                                 if (state is LofiPlaying &&
-                                    state.lofi != lofi) {
+                                    state.lofi != lofi ) {
                                   print("Another Lofi Playing");
                                   lofibloc.add(StopLofi());
                                 }

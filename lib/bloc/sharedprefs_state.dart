@@ -7,7 +7,11 @@ abstract class SharedprefsState extends Equatable {
   List<Object> get props => [];
 }
 
-class SharedprefsInitial extends SharedprefsState {}
+class SharedprefsInitial extends SharedprefsState {
+  SharedprefsInitial() {
+ 
+  }
+}
 
 class FavouriteAdded extends SharedprefsState {}
 
@@ -15,7 +19,8 @@ class FavouriteRemoved extends SharedprefsState {}
 
 class RecentAdded extends SharedprefsState {
   RecentAdded() {
-    print("Recent Added State is called");
+ 
+    
   }
   @override
   List<Object> get props => [];
