@@ -3,7 +3,6 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lofi/bloc/sharedprefs_bloc.dart';
-import 'package:lofi/data/models/lofi.dart';
 import 'package:lofi/pages/home.dart';
 import 'bloc/lofi_bloc.dart';
 import 'data/lofi_repository.dart';

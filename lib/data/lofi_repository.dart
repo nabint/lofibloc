@@ -7,26 +7,50 @@ class LofiRepo {
     _allLofi.add(
       Lofi(
           id: 1,
-          title: "Chill Lofi",
-          lofiUrl: "1.mp3",
-          artist: "Enrique",
-          imageUrl: "assets/images/01.jpg"),
+          title: "Loving You",
+          lofiUrl: "Loving You by l33.mp3",
+          artist: "I33",
+          imageUrl: "assets/images/LovingYou.PNG"),
     );
     _allLofi.add(
       Lofi(
           id: 2,
-          title: "Fhill Lofi",
-          lofiUrl: "2.mp3",
-          artist: "Enrique",
-          imageUrl: "assets/images/01.jpg"),
+          title: "Thoughts",
+          lofiUrl: "Thoughts by Envy.mp3",
+          artist: "Envy",
+          imageUrl: "assets/images/Thoughts.jpg"),
     );
     _allLofi.add(
       Lofi(
           id: 3,
-          title: "Shill Lofi",
-          lofiUrl: "1.mp3",
-          artist: "Enrique",
-          imageUrl: "assets/images/01.jpg"),
+          title: "Alone",
+          lofiUrl: "Alone by Envy.mp3",
+          artist: "Envy",
+          imageUrl: "assets/images/Alone.jpg"),
+    );
+    _allLofi.add(
+      Lofi(
+          id: 4,
+          title: "Sad Afternoon",
+          lofiUrl: "Sweet Sad Afternoon by BubbleBeats.mp3",
+          artist: "BubbleBeats",
+          imageUrl: "assets/images/Afternoon.jpg"),
+    );
+    _allLofi.add(
+      Lofi(
+          id: 5,
+          title: "The End",
+          lofiUrl: "The End by Eva.mp3",
+          artist: "Eva",
+          imageUrl: "assets/images/The End.jpg"),
+    );
+    _allLofi.add(
+      Lofi(
+          id: 6,
+          title: "Summer Nights",
+          lofiUrl: "Summer Night by l33.mp3",
+          artist: "I33",
+          imageUrl: "assets/images/Summer Nights.jpg"),
     );
   }
 

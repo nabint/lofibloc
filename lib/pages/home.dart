@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -9,7 +8,6 @@ import 'package:lofi/bloc/sharedprefs_bloc.dart';
 import 'package:lofi/data/icon/my_flutter_app_icons.dart';
 import 'package:lofi/data/models/lofi.dart';
 import 'package:lofi/pages/widgets/drawer.dart';
-
 import 'package:lofi/pages/widgets/rec_widget.dart';
 import 'package:lofi/pages/widgets/pop_widget.dart';
 import 'package:lofi/utils/shared_prefs_central.dart';
@@ -43,7 +41,7 @@ class _HomeState extends State<Home> {
     _scrollViewController.addListener(() {
       if (_scrollViewController.position.userScrollDirection ==
               ScrollDirection.reverse &&
-          _scrollViewController.offset > 300) {
+          _scrollViewController.offset > 10) {
         if (!isScrollingDown) {
           isScrollingDown = true;
           _showAppbar = false;
@@ -52,7 +50,7 @@ class _HomeState extends State<Home> {
       }
       if (_scrollViewController.position.userScrollDirection ==
               ScrollDirection.forward &&
-          _scrollViewController.offset > 300) {
+          _scrollViewController.offset > 2) {
         if (isScrollingDown) {
           isScrollingDown = false;
           _showAppbar = true;
@@ -131,14 +129,16 @@ class _HomeState extends State<Home> {
     var time = const Duration(seconds: 10);
     Timer.periodic(time, (timer) => readSharedPref());
     return Scaffold(
+      
       extendBody: true,
       extendBodyBehindAppBar: true,
       backgroundColor: Color(0xfffcfcff),
       drawer: DrawerWidget(),
+      
       body: Column(
         children: [
           AnimatedContainer(
-            height: _showAppbar ? 56.0 : 0.0,
+            height: _showAppbar ? 70.0 : 0.0,
             duration: Duration(milliseconds: 300),
             child: AppBar(
               automaticallyImplyLeading: false,
@@ -150,6 +150,7 @@ class _HomeState extends State<Home> {
                     MyFlutterApp.eq,
                     color: Color(0xFF00022E),
                   ),
+                  splashRadius: 20,
                   onPressed: () => Scaffold.of(context).openDrawer(),
                 ),
               ),
@@ -157,12 +158,12 @@ class _HomeState extends State<Home> {
           ),
           Expanded(
             child: SingleChildScrollView(
-              controller: _scrollViewController,
+              // controller: _scrollViewController,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(left: 30, top: 20),
+                    padding: EdgeInsets.only(left: 30, top: 10),
                     child: Text(
                       'Popular Lofi',
                       style: TextStyle(

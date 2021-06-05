@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_share/flutter_share.dart';
 import 'package:lofi/pages/about.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:volume/volume.dart';
 
 class DrawerWidget extends StatefulWidget {
@@ -16,12 +16,12 @@ class _DrawerWidgetState extends State<DrawerWidget> {
         .STREAM_MUSIC); // you can change which volume you want to change.
   }
 
-  Future<void> share() async {
-    await FlutterShare.share(
-        title: 'Example share',
-        text: 'Example share text',
-        linkUrl: 'https://flutter.dev/',
-        chooserTitle: 'Example Chooser Title');
+  void _onShare(BuildContext context) async {
+    final box = context.findRenderObject() as RenderBox;
+
+    await Share.share("sasdasdas",
+        subject: "qweqwe",
+        sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
   }
 
   updateVolumes() async {
@@ -75,7 +75,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                 'Share It',
                 style: TextStyle(color: Colors.black, fontSize: 18),
               ),
-              onTap: share),
+              onTap: () => _onShare(context)),
           ListTile(
             leading: Icon(
               Icons.volume_down,

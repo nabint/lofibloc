@@ -18,7 +18,6 @@ class LofiDetail extends StatefulWidget {
 }
 
 class _LofiDetailState extends State<LofiDetail> {
-  // StreamController<bool> _streamController = StreamController<bool>();
   LofiBloc lofibloc;
   List<Lofi> allLofi;
   Lofi nextLofi, prevLofi;
@@ -154,16 +153,18 @@ class _LofiDetailState extends State<LofiDetail> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
-            widget.lofi.artist ?? 'No track',
+            widget.lofi.title ?? '',
             style: TextStyle(fontSize: 30),
             textAlign: TextAlign.center,
           ),
           SizedBox(height: maxSize * 0.01),
           Text(
-            widget.lofi.title ?? '',
+            widget.lofi.artist ?? 'No track',
             style: TextStyle(fontSize: 20),
             textAlign: TextAlign.center,
           ),
+          
+          
         ],
       ),
     );
@@ -192,14 +193,6 @@ class _LofiDetailState extends State<LofiDetail> {
               height: (maxSize - mediaQueryData.padding.top) * 0.45,
               fit: BoxFit.cover,
             ),
-            // Padding(
-            //   padding: const EdgeInsets.all(8.0),
-            //   child: Align(
-
-            //     alignment: Alignment.topRight,
-            //     child: Icon(Icons.favorite_outline,size: 45,color: Colors.black,),
-            //   ),
-            // )
           ]),
         ),
       ),

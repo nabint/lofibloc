@@ -42,7 +42,7 @@ class RecentLofi extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15.0),
                   image: DecorationImage(
-                      image: AssetImage('assets/images/01.jpg'),
+                      image: AssetImage(lofi.imageUrl),
                       fit: BoxFit.cover),
                 ),
               ),
