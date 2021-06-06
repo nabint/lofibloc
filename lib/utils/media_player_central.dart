@@ -11,12 +11,10 @@ void updateNotificationMediaPlayer(bool isPlaying, Lofi lofi) {
       body: lofi.artist,
       summary: isPlaying ? 'Now playing' : '',
       largeIcon: 'asset://' + lofi.imageUrl,
-      color: Colors.purple.shade700,
       bigPicture: lofi.getImageUrl,
       autoCancel: false,
       hideLargeIconOnExpand: true,
       notificationLayout: NotificationLayout.MediaPlayer,
-      progress: 13,
     ),
     actionButtons: [
       NotificationActionButton(

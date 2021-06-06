@@ -9,11 +9,12 @@ class DrawerWidget extends StatefulWidget {
 }
 
 class _DrawerWidgetState extends State<DrawerWidget> {
-  double _sliderValue = 0.0;
-  int maxVol = 0, currentVol = 0;
+  double _sliderValue;
+  int maxVol, currentVol;
+  double height;
   Future<void> initPlatformState() async {
     await Volume.controlVolume(AudioManager
-        .STREAM_MUSIC); // you can change which volume you want to change.
+        .STREAM_MUSIC); // you can change which volume you want to change
   }
 
   void _onShare(BuildContext context) async {
@@ -46,97 +47,117 @@ class _DrawerWidgetState extends State<DrawerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.3,
-            child: DrawerHeader(
-              child: Center(
-                  child: Text(
-                'Low fly',
-                style: TextStyle(color: Colors.white, fontSize: 40),
-              )),
-              decoration: BoxDecoration(
-                color: Colors.grey,
+    height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+    return Container(
+      width: width * 0.8,
+      child: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            SizedBox(
+              height: height * 0.3,
+              child: DrawerHeader(
+                child: Align(
+                  alignment: FractionalOffset.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    child: Text(
+                      'Low fly',
+                      style: TextStyle(color: Colors.white, fontSize: 40),
+                    ),
+                  ),
+                ),
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage("assets/images/drawer.jpg"),
+                      fit: BoxFit.fill),
+                ),
               ),
             ),
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.07,
-          ),
-          ListTile(
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.02,
+            ),
+            ListTile(
+                leading: Icon(
+                  Icons.share,
+                  size: 28,
+                  color: Color(0xff152238),
+                ),
+                title: Text(
+                  'Share It',
+                  style: TextStyle(color: Colors.black, fontSize: 16),
+                ),
+                onTap: () => _onShare(context)),
+            Divider(),
+            ListTile(
               leading: Icon(
-                Icons.share,
-                size: 28,
+                Icons.volume_down,
+                size: 34,
+                color: Color(0xff152238),
               ),
               title: Text(
-                'Share It',
-                style: TextStyle(color: Colors.black, fontSize: 18),
+                'Volume Control',
+                style: TextStyle(color: Colors.black, fontSize: 16),
               ),
-              onTap: () => _onShare(context)),
-          ListTile(
-            leading: Icon(
-              Icons.volume_down,
-              size: 34,
-            ),
-            title: Text(
-              'Volume Control',
-              style: TextStyle(color: Colors.black, fontSize: 18),
-            ),
-            onTap: () {
-              // Update the state of the app.
-              // ...
-            },
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 50.0),
-            child: Slider(
-              min: 0,
-              max: maxVol.toDouble(),
-              value: _sliderValue,
-              onChanged: (value) async {
-                setState(() {
-                  _sliderValue = value;
-                });
-                await setVol(value.toInt());
-                await updateVolumes();
+              onTap: () {
+                // Update the state of the app.
+                // ...
               },
             ),
-          ),
-          ListTile(
-            leading: Icon(
-              Icons.thumb_up_sharp,
-              size: 28,
+            Padding(
+              padding: const EdgeInsets.only(left: 50.0),
+              child: Slider(
+                min: 0,
+                activeColor: Color(0xff152238),
+                max: maxVol.toDouble(),
+                value: _sliderValue,
+                onChanged: (value) async {
+                  setState(() {
+                    _sliderValue = value;
+                  });
+                  await setVol(value.toInt());
+                  await updateVolumes();
+                },
+              ),
             ),
-            title: Text(
-              'Rate Us',
-              style: TextStyle(color: Colors.black, fontSize: 18),
+            Divider(),
+            ListTile(
+              leading: Icon(
+                Icons.star,
+                size: 28,
+                color: Color(0xff152238),
+              ),
+              title: Text(
+                'Rate Us',
+                style: TextStyle(color: Colors.black, fontSize: 16),
+              ),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+              },
             ),
-            onTap: () {
-              // Update the state of the app.
-              // ...
-            },
-          ),
-          ListTile(
-            leading: Icon(
-              Icons.people,
-              size: 28,
+            Divider(),
+            ListTile(
+              leading: Icon(
+                Icons.people,
+                size: 28,
+                color: Color(0xff152238),
+              ),
+              title: Text(
+                'About',
+                style: TextStyle(color: Colors.black, fontSize: 16),
+              ),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) {
+                  return AboutUs();
+                }));
+                // Update the state of the app.
+                // ...
+              },
             ),
-            title: Text(
-              'About',
-              style: TextStyle(color: Colors.black, fontSize: 18),
-            ),
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (_) {
-                return AboutUs();
-              }));
-              // Update the state of the app.
-              // ...
-            },
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

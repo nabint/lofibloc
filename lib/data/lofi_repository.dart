@@ -7,11 +7,12 @@ class LofiRepo {
     _allLofi.add(
       Lofi(
           id: 1,
-          title: "Loving You",
-          lofiUrl: "Loving You by l33.mp3",
-          artist: "I33",
-          imageUrl: "assets/images/LovingYou.PNG"),
+          title: "The End",
+          lofiUrl: "The End by Eva.mp3",
+          artist: "Eva",
+          imageUrl: "assets/images/theend.jpg"),
     );
+
     _allLofi.add(
       Lofi(
           id: 2,
@@ -39,10 +40,10 @@ class LofiRepo {
     _allLofi.add(
       Lofi(
           id: 5,
-          title: "The End",
-          lofiUrl: "The End by Eva.mp3",
-          artist: "Eva",
-          imageUrl: "assets/images/The End.jpg"),
+          title: "Loving You",
+          lofiUrl: "Loving You by l33.mp3",
+          artist: "I33",
+          imageUrl: "assets/images/LovingYou.PNG"),
     );
     _allLofi.add(
       Lofi(
@@ -52,6 +53,7 @@ class LofiRepo {
           artist: "I33",
           imageUrl: "assets/images/Summer Nights.jpg"),
     );
+    print("Lofi Populated");
   }
 
   List<Lofi> get allLofi {

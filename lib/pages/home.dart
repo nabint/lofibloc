@@ -1,4 +1,5 @@
-import 'dart:async';
+
+import 'dart:core';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -7,10 +8,12 @@ import 'package:lofi/bloc/lofi_bloc.dart';
 import 'package:lofi/bloc/sharedprefs_bloc.dart';
 import 'package:lofi/data/icon/my_flutter_app_icons.dart';
 import 'package:lofi/data/models/lofi.dart';
+import 'package:lofi/pages/widgets/bottom_navbar.dart';
 import 'package:lofi/pages/widgets/drawer.dart';
 import 'package:lofi/pages/widgets/rec_widget.dart';
 import 'package:lofi/pages/widgets/pop_widget.dart';
 import 'package:lofi/utils/shared_prefs_central.dart';
+import 'package:palette_generator/palette_generator.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -18,47 +21,25 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  ScrollController _scrollViewController = new ScrollController();
   bool _showAppbar = true;
   bool isScrollingDown = false;
   List<Lofi> _lofiList, lofiList;
   var reqLofi, nextLofi, prevLofi;
   String recLofiString;
   List<Lofi> recLofis = [];
-
+  List<PaletteColor> darkcolors = [];
+  List<PaletteColor> lightcolors = [];
   List<Widget> recWidgets = [];
 
   @override
   void initState() {
     super.initState();
     final lofibloc = BlocProvider.of<LofiBloc>(context);
-    lofibloc.add(PopulateLofi());
     readSharedPref();
-    WidgetsBinding.instance.addPostFrameCallback(
-      (timeStamp) {},
-    );
 
-    _scrollViewController.addListener(() {
-      if (_scrollViewController.position.userScrollDirection ==
-              ScrollDirection.reverse &&
-          _scrollViewController.offset > 10) {
-        if (!isScrollingDown) {
-          isScrollingDown = true;
-          _showAppbar = false;
-          setState(() {});
-        }
-      }
-      if (_scrollViewController.position.userScrollDirection ==
-              ScrollDirection.forward &&
-          _scrollViewController.offset > 2) {
-        if (isScrollingDown) {
-          isScrollingDown = false;
-          _showAppbar = true;
-          setState(() {});
-        }
-      }
-    });
-
+    lofiList = lofibloc.lofiRepo.allLofi;
+    print("Lofi" + lofiList.toString());
+    _updatePalettes(lofiList);
     AwesomeNotifications().initialize('resource://drawable/res_ic_play', [
       NotificationChannel(
           icon: 'resource://drawable/res_media_icon',
@@ -74,7 +55,7 @@ class _HomeState extends State<Home> {
 
     AwesomeNotifications().actionStream.listen(
       (receivedNotification) {
-        lofiList = lofibloc.lofiRepo.allLofi;
+        // lofiList = lofibloc.lofiRepo.allLofi;
 
         reqLofi = lofiList.firstWhere(
           (element) {
@@ -117,24 +98,42 @@ class _HomeState extends State<Home> {
     );
   }
 
+  _updatePalettes(List<Lofi> lofilist) async {
+    for (Lofi lofi in lofilist) {
+      final PaletteGenerator generator =
+          await PaletteGenerator.fromImageProvider(
+        AssetImage(lofi.imageUrl),
+        size: Size(200, 100),
+      );
+      darkcolors.add(generator.darkMutedColor != null
+          ? generator.darkMutedColor
+          : PaletteColor(Colors.red, 2));
+      lightcolors.add(generator.lightMutedColor != null
+          ? generator.darkMutedColor
+          : PaletteColor(Colors.red, 2));
+    }
+
+    setState(() {
+      print("Runned");
+    });
+  }
+
   @override
   void dispose() {
-    _scrollViewController.dispose();
-    _scrollViewController.removeListener(() {});
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    var time = const Duration(seconds: 10);
-    Timer.periodic(time, (timer) => readSharedPref());
+    // var time = const Duration(seconds: 10);
+    // Timer.periodic(time, (timer) => readSharedPref());
+
     return Scaffold(
-      
       extendBody: true,
       extendBodyBehindAppBar: true,
       backgroundColor: Color(0xfffcfcff),
       drawer: DrawerWidget(),
-      
+
       body: Column(
         children: [
           AnimatedContainer(
@@ -158,7 +157,6 @@ class _HomeState extends State<Home> {
           ),
           Expanded(
             child: SingleChildScrollView(
-              // controller: _scrollViewController,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -194,8 +192,13 @@ class _HomeState extends State<Home> {
                                       child: Row(
                                         children: [
                                           PopWidget(
-                                            lofi: _lofiList[index],
-                                          ),
+                                              lofi: _lofiList[index],
+                                              darkcolor: darkcolors.isNotEmpty
+                                                  ? darkcolors[index]
+                                                  : null,
+                                              lightcolor: lightcolors.isNotEmpty
+                                                  ? lightcolors[index]
+                                                  : null),
                                           SizedBox(width: 17)
                                         ],
                                       ),
@@ -205,8 +208,14 @@ class _HomeState extends State<Home> {
                                         Row(
                                           children: [
                                             PopWidget(
-                                              lofi: _lofiList[index],
-                                            ),
+                                                lofi: _lofiList[index],
+                                                darkcolor: darkcolors.isNotEmpty
+                                                    ? darkcolors[index]
+                                                    : null,
+                                                lightcolor:
+                                                    lightcolors.isNotEmpty
+                                                        ? lightcolors[index]
+                                                        : null),
                                             SizedBox(width: 17)
                                           ],
                                         ),
@@ -230,8 +239,13 @@ class _HomeState extends State<Home> {
                                       child: Row(
                                         children: [
                                           PopWidget(
-                                            lofi: _lofiList[index],
-                                          ),
+                                              lofi: _lofiList[index],
+                                              darkcolor: darkcolors.isNotEmpty
+                                                  ? darkcolors[index]
+                                                  : null,
+                                              lightcolor: lightcolors.isNotEmpty
+                                                  ? lightcolors[index]
+                                                  : null),
                                           SizedBox(width: 17)
                                         ],
                                       ),
@@ -241,8 +255,14 @@ class _HomeState extends State<Home> {
                                         Row(
                                           children: [
                                             PopWidget(
-                                              lofi: _lofiList[index],
-                                            ),
+                                                lofi: _lofiList[index],
+                                                darkcolor: darkcolors.isNotEmpty
+                                                    ? darkcolors[index]
+                                                    : null,
+                                                lightcolor:
+                                                    lightcolors.isNotEmpty
+                                                        ? lightcolors[index]
+                                                        : null),
                                             SizedBox(width: 17)
                                           ],
                                         ),
@@ -285,7 +305,6 @@ class _HomeState extends State<Home> {
                       builder: (context, state) {
                         if (state is RecentAdded ||
                             state is SharedprefsInitial) {
-                          // readSharedPref(BlocProvider.of<LofiBloc>(context));
                           return BlocProvider.value(
                             value: BlocProvider.of<LofiBloc>(context),
                             child: Column(children: _buildRecentWidgets()),

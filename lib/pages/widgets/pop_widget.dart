@@ -4,30 +4,42 @@ import 'package:lofi/bloc/lofi_bloc.dart';
 import 'package:lofi/data/models/lofi.dart';
 import 'package:lofi/pages/lofi_detail.dart';
 import 'package:lofi/utils/media_player_central.dart';
+import 'package:palette_generator/palette_generator.dart';
 
 // ignore: must_be_immutable
 class PopWidget extends StatelessWidget {
   final Lofi lofi;
-
-  PopWidget({
-    Key key,
-    this.lofi,
-  }) : super(key: key);
-
+  final PaletteColor darkcolor;
+  final PaletteColor lightcolor;
+  PopWidget({Key key, this.lofi, this.darkcolor, this.lightcolor})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LofiBloc, LofiState>(
       builder: (context, state) {
-        if (state is LofiPlaying && state.lofi.id == lofi.id) {
-          return build_pop_widget(true, lofi, context);
-        } else
-          return build_pop_widget(false, lofi, context);
+        if (darkcolor != null) {
+          if (state is LofiPlaying && state.lofi.id == lofi.id) {
+            return build_pop_widget(true, lofi, context);
+          } else
+            return build_pop_widget(false, lofi, context);
+        } else {
+          return Container(
+            height: 230,
+            width: 215,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(25.0),
+            ),
+            child: Center(
+                child: CircularProgressIndicator(
+              strokeWidth: 2,
+            )),
+          );
+        }
       },
     );
   }
 
-  // ignore: non_constant_identifier_names
   Widget build_pop_widget(bool isPlaying, Lofi lofi, BuildContext context) {
     final lofibloc = BlocProvider.of<LofiBloc>(context);
 
@@ -62,7 +74,9 @@ class PopWidget extends StatelessWidget {
               image: AssetImage(lofi.getImageUrl), fit: BoxFit.cover),
           boxShadow: [
             BoxShadow(
-              color: Colors.red.withOpacity(0.15),
+              color: lightcolor != null
+                  ? lightcolor.color.withOpacity(0.15)
+                  : Colors.red.withOpacity(0.15),
               offset: Offset(2, 12.0),
               blurRadius: 4.0,
               spreadRadius: 5.0,
@@ -83,7 +97,9 @@ class PopWidget extends StatelessWidget {
                       bottomRight: Radius.circular(25),
                       bottomLeft: Radius.circular(25),
                     ),
-                    color: Colors.pink.withOpacity(0.8),
+                    color: darkcolor != null
+                        ? darkcolor.color.withOpacity(0.8)
+                        : Colors.pink.withOpacity(0.8),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -130,7 +146,7 @@ class PopWidget extends StatelessWidget {
                             return InkWell(
                               onTap: () {
                                 if (state is LofiPlaying &&
-                                    state.lofi != lofi ) {
+                                    state.lofi != lofi) {
                                   print("Another Lofi Playing");
                                   lofibloc.add(StopLofi());
                                 }

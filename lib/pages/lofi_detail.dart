@@ -163,8 +163,6 @@ class _LofiDetailState extends State<LofiDetail> {
             style: TextStyle(fontSize: 20),
             textAlign: TextAlign.center,
           ),
-          
-          
         ],
       ),
     );
@@ -280,6 +278,7 @@ class _LofiDetailState extends State<LofiDetail> {
                           iconSize: maxSize * 0.08,
                           onPressed: () {
                             print('On tappped');
+                            lofibloc.add(StopLofi());
                             lofibloc.add(PlayLofi(widget.lofi.id, widget.lofi));
                           },
                         );

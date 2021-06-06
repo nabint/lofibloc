@@ -9,15 +9,16 @@ class LofiLoading extends LofiEvent {
   List<Object> get props => throw UnimplementedError();
 }
 
-class RepeatEvent extends LofiEvent{
-  
+class RepeatEvent extends LofiEvent {
   @override
   // TODO: implement props
   List<Object> get props => throw UnimplementedError();
-  
 }
 
 class PopulateLofi extends LofiEvent {
+  PopulateLofi() {
+    print("PopulateLofi event");
+  }
   @override
   // TODO: implement props
   List<Object> get props => throw UnimplementedError();
@@ -38,13 +39,12 @@ class StopLofi extends LofiEvent {
   // TODO: implement props
   List<Object> get props => throw UnimplementedError();
 }
-class StopLofii extends LofiEvent{
+
+class StopLofii extends LofiEvent {
   @override
   // TODO: implement props
   List<Object> get props => throw UnimplementedError();
-
 }
-
 
 class PauseLofi extends LofiEvent {
   Lofi lofi;
